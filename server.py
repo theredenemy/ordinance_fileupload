@@ -1,0 +1,58 @@
+import os
+import socket
+import threading
+
+#IP = socket.gethostbyname(socket.gethostname())
+IP = "0.0.0.0"
+PORT = 4456
+IPANDPORT = (IP, PORT)
+SIZE = 1024
+def handle_client(client, addr):
+    print(f"Client {addr} has Connected")
+    filename = str(client.recv(SIZE).decode())
+    filename = filename.rstrip('\r\n')
+    client.send("SENT".encode())
+    print(filename)
+    filesize = int(client.recv(SIZE).decode())
+    client.send("SENT".encode())
+    print(filesize)
+
+    file = open(filename, 'wb')
+
+    filebytes = bytearray()
+
+    done = False
+    print("Getting Data...\n")
+    number = 0
+    while not done:
+        data = client.recv(filesize)
+        client.send("SENT".encode())
+        number = number + 1
+        print(number, end='\r')
+        if filebytes[-5:] == b"<END>":
+            done = True
+            print("\n")
+            filebytes = filebytes.replace(b'<END>', b'')
+        else:
+            filebytes += data
+            filebytes = filebytes.rstrip(b'\r\n')
+    print("Got Data..")
+    file.write(filebytes)
+    file.close()
+    client.close()
+    print(f"Done : Saved {filename}...")
+
+def main():
+    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server.bind(IPANDPORT)
+    server.listen()
+    print(f"Start Server {IP}:{PORT}")
+
+    while True:
+        client, addr = server.accept()
+        print(addr)
+        thread = threading.Thread(target=handle_client, args=(client, addr))
+        thread.start()
+
+if __name__ == "__main__":
+    main()

@@ -43,4 +43,4 @@ def SendFile(thefile, ip, port):
     return True
 
 if __name__ == "__main__":
-    SendFile("thcrap.zip", ip, port)
+    SendFile("inputs_test.txt", ip, port)

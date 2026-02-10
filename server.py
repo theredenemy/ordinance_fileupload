@@ -16,7 +16,7 @@ path = configHelper.read_config(config_file, "fileupload", "path", default_value
 def handle_client(client, addr):
     print(f"Client {addr} has Connected")
     if os.path.isfile(os.path.join(path, lockfile)):
-        if not is_file_in_use:
+        if not is_file_in_use(os.path.join(path, lockfile)):
             os.remove(os.path.join(path, lockfile))
         else:
             client.shutdown(socket.SHUT_RDWR)

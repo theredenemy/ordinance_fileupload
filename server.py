@@ -57,7 +57,7 @@ def handle_client(client, addr):
         os.remove(filepath)
     shutil.move(filename, filepath)
     print(f"Moved {filename} to {filepath} ")
-    if os.path.isfile("start.cmd"):
+    if os.path.isfile("send.cmd"):
         os.system("start cmd /c send.cmd")
 
 def main():

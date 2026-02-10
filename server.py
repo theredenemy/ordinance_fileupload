@@ -19,7 +19,7 @@ def handle_client(client, addr):
         if not is_file_in_use:
             os.remove(os.path.join(path, lockfile))
         else:
-            client.close()
+            client.shutdown(socket.SHUT_RDWR)
     filename = str(client.recv(SIZE).decode())
     filename = filename.rstrip('\r\n')
     client.send("SENT".encode())

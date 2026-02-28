@@ -6,12 +6,13 @@ import configHelper
 from fileinuse_functions import is_file_in_use
 
 #IP = socket.gethostbyname(socket.gethostname())
-IP = "0.0.0.0"
-PORT = 4456
-IPANDPORT = (IP, PORT)
+ip = "0.0.0.0"
+port = 4456
+
 SIZE = 1024
 config_file = "fileupload.ini"
 lockfile = "ord.lock"
+stop_server = False
 path = configHelper.read_config(config_file, "fileupload", "path", default_value="C:\\Users\\Administrator\\Documents\\ord_receiver")
 def handle_client(client, addr):
     print(f"Client {addr} has Connected")
@@ -60,7 +61,8 @@ def handle_client(client, addr):
     if os.path.isfile("send.cmd"):
         os.system("start cmd /c send.cmd")
 
-def main():
+def main(IP, PORT):
+    IPANDPORT = (IP, PORT)
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server.bind(IPANDPORT)
     server.listen()
@@ -68,9 +70,10 @@ def main():
 
     while True:
         client, addr = server.accept()
+        print(threading.active_count())
         print(addr)
         thread = threading.Thread(target=handle_client, args=(client, addr))
         thread.start()
 
 if __name__ == "__main__":
-    main()
+    main(ip, port)

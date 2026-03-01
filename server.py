@@ -3,6 +3,7 @@ import socket
 import threading
 import shutil
 import configHelper
+import time
 from fileinuse_functions import is_file_in_use
 
 #IP = socket.gethostbyname(socket.gethostname())
@@ -67,8 +68,9 @@ def main(IP, PORT):
     server.bind(IPANDPORT)
     server.listen()
     print(f"Start Server {IP}:{PORT}")
-
+    
     while True:
+        
         client, addr = server.accept()
         print(threading.active_count())
         print(addr)
@@ -76,4 +78,13 @@ def main(IP, PORT):
         thread.start()
 
 if __name__ == "__main__":
-    main(ip, port)
+    server_thread = threading.Thread(target=main, args=(ip, port))
+    server_thread.daemon = True
+    server_thread.start()
+
+    while True:
+        try:
+            time.sleep(3)
+        except KeyboardInterrupt:
+            print("shutdown")
+            break
